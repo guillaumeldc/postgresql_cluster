@@ -10,8 +10,12 @@ etc_hosts: []
 #  - "10.128.64.143 pgbackrest.minio.local minio.local s3.eu-west-3.amazonaws.com"  # example (MinIO)
 #  - ""
 
-ntp_enabled: false  # or 'true' if you want to install and configure the ntp service
-ntp_servers: []
+ntp_enabled: true  # or 'true' if you want to install and configure the ntp service
+ntp_servers:
+  - "0.us.pool.ntp.org"
+  - "1.us.pool.ntp.org"
+  - "2.us.pool.ntp.org"
+  - "3.us.pool.ntp.org"
 #  - "10.128.64.44"
 #  - "10.128.64.45"
 
