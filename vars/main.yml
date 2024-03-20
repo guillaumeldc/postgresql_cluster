@@ -598,4 +598,8 @@ netdata_conf:
   page_cache_size: 64  # Determines the amount of RAM in MiB that is dedicated to caching Netdata metric values.
   dbengine_disk_space: 1024  # Determines the amount of disk space in MiB that is dedicated to storing Netdata metric values.
 
+# remove cluster variables
+remove_psql_data: true
+
+
 ...

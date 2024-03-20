@@ -15,11 +15,6 @@
             state: stopped
             enabled: false
 
-        - name: Remove existing PostgreSQL data directory
-          ansible.builtin.file:
-            path: /var/lib/postgresql/16/main
-            state: absent
-
         - name: Delete PostgreSQL database content
           ansible.builtin.file:
             path: "{{ postgresql_data_dir }}"
@@ -86,4 +81,19 @@
             path: "{{ etcd_data_dir }}/member"
             state: absent
       when: remove_etcd | default(false) | bool
+      ignore_errors: true
+
+- name: remove_cluster.yml | Remove PSQL Data
+  hosts: postgres_cluster
+  become: true
+  pre_tasks:
+    - name: Include main variables
+      ansible.builtin.include_vars: "vars/main.yml"
+  tasks:
+    - block:
+        - name: Remove existing PostgreSQL data directory
+          ansible.builtin.file:
+            path: /var/lib/postgresql/16/main
+            state: absent
+      when: remove_psql_data | default(false) | bool
       ignore_errors: true
