@@ -14,18 +14,26 @@
             name: patroni
             state: stopped
             enabled: false
+
+        - name: Remove existing PostgreSQL data directory
+          ansible.builtin.file:
+            path: /var/lib/postgresql/16/main
+            state: absent
+
         - name: Delete PostgreSQL database content
           ansible.builtin.file:
             path: "{{ postgresql_data_dir }}"
             state: absent
       when: remove_postgres | default(false) | bool
       ignore_errors: true
+
     - block:
         - name: Delete PgBackRest repository
           ansible.builtin.file:
             # path: pgbackrest_conf global repo1-path
             path: /var/lib/pgbackrest
             state: absent
+
         - name: Delete PgBackRest cron
           ansible.builtin.file:
             path: /etc/cron.d/pgbackrest
@@ -46,11 +54,13 @@
             name: consul
             state: stopped
             enabled: false
+
         - name: Delete Consul content
           ansible.builtin.file:
             path: "{{ consul_data_path }}"
             state: absent
-        - name: Delete Consul serivce
+
+        - name: Delete Consul service
           ansible.builtin.file:
             path: /lib/systemd/system/consul.service
             state: absent
@@ -70,6 +80,7 @@
             name: etcd
             state: stopped
             enabled: false
+
         - name: Delete Etcd content
           ansible.builtin.file:
             path: "{{ etcd_data_dir }}/member"
