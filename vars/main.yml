@@ -600,6 +600,7 @@ netdata_conf:
 
 # remove cluster variables
 remove_psql_data: true
-
+remove_postgres: true
+remove_etcd: true
 
 ...
