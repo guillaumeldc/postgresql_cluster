@@ -65,7 +65,7 @@ replica
 ansible_connection='ssh'
 ansible_ssh_port='22'
 ansible_user='elduco'
-ansible_ssh_pass='3Digital2019!'  # "sshpass" package is required for use "ansible_ssh_pass"
+ansible_ssh_pass='!Digital2024'  # "sshpass" package is required for use "ansible_ssh_pass"
 #ansible_ssh_private_key_file=
 #ansible_python_interpreter='/usr/bin/python3'  # is required for use python3
 
