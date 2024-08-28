@@ -72,17 +72,14 @@
       retries: 3
       when: ansible_os_family == "Debian"
 
-    - name: Add hashicorp repository
-      ansible.builtin.deb822_repository:
-        name: "{{ consul_repo_url.split('//')[1] | replace('.', '-') }}"
-        types: "deb"
-        uris: "{{ consul_repo_url }}"
-        signed_by: "{{ consul_repo_url }}/gpg"
-        suites: "{{ ansible_distribution_release }}"
-        components: "main"
-        enabled: true
+    - name: Add HashiCorp repository
+      ansible.builtin.apt_repository:
+        repo: "deb {{ consul_repo_url }} {{ ansible_distribution_release }} main"
         state: present
-      when: "ansible_os_family|lower == 'debian'"
+        filename: "{{ consul_repo_url.split('//')[1] | replace('.', '-') }}"
+        key: "{{ consul_repo_url }}/gpg"
+      when: ansible_os_family | lower == 'debian'
+
 
     - name: Update apt cache
       ansible.builtin.apt:
