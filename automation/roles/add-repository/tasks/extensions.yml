@@ -5,15 +5,11 @@
 - block:
     # Debian based
     - name: Add TimescaleDB repository
-      ansible.builtin.deb822_repository:
-        name: "timescaledb"
-        types: [deb]
-        uris: "https://packagecloud.io/timescale/timescaledb/{{ ansible_distribution | lower }}"
-        signed_by: "https://packagecloud.io/timescale/timescaledb/gpgkey"
-        suites: "{{ ansible_distribution_release }}"
-        components: [main]
+      ansible.builtin.apt_repository:
+        repo: "deb https://packagecloud.io/timescale/timescaledb/{{ ansible_distribution | lower }} {{ ansible_distribution_release }} main"
         state: present
-        enabled: true
+        filename: "timescaledb"
+        key: "https://packagecloud.io/timescale/timescaledb/gpgkey"
       when: ansible_os_family == "Debian"
 
     # RedHat based
@@ -29,19 +25,15 @@
   when: (enable_timescale | default(false) | bool) or (enable_timescaledb | default(false) | bool)
   tags: add_repo, timescaledb, timescale
 
-# Citus (if 'enable_citus' is 'true')
+
 - block:
     # Debian based
     - name: Add Citus repository
-      ansible.builtin.deb822_repository:
-        name: "citusdata"
-        types: [deb]
-        uris: "https://repos.citusdata.com/community/{{ ansible_distribution | lower }}/"
-        suites: "{{ ansible_distribution_release }}"
-        components: [main]
-        signed_by: "https://repos.citusdata.com/community/gpgkey"
+      ansible.builtin.apt_repository:
+        repo: "deb https://repos.citusdata.com/community/{{ ansible_distribution | lower }}/ {{ ansible_distribution_release }} main"
         state: present
-        enabled: true
+        filename: "citusdata"
+        key: "https://repos.citusdata.com/community/gpgkey"
       when: ansible_os_family == "Debian"
 
     # RedHat based
@@ -59,5 +51,6 @@
     - enable_citus | default(false) | bool
     - postgresql_version | int >= 11
   tags: add_repo, citus
+
 
 ...
