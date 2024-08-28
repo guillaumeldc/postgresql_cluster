@@ -21,7 +21,7 @@
 10.8.162.102
 
 # if dcs_exists: false and dcs_type: "consul"
-# [consul_instances]  # recommendation: 3 or 5-7 nodes
+[consul_instances]  # recommendation: 3 or 5-7 nodes
 # 10.128.64.140 consul_node_role=server consul_bootstrap_expect=true consul_datacenter=dc1
 # 10.128.64.142 consul_node_role=server consul_bootstrap_expect=true consul_datacenter=dc1
 # 10.128.64.143 consul_node_role=server consul_bootstrap_expect=true consul_datacenter=dc1
@@ -41,15 +41,15 @@
 
 # PostgreSQL nodes
 [master]
-10.64.48.95 hostname=DUKEPDPS41 postgresql_exists=false
+10.64.48.95 hostname=DUKEPDPS41 postgresql_exists=false patroni_tags="datacenter=dc1"
 
 [replica]
-10.64.48.96 hostname=DUKEPDPS42 postgresql_exists=false
-10.64.48.97 hostname=DUKEPDPS43 postgresql_exists=false
-10.64.48.98 hostname=DUKEPDPS44 postgresql_exists=false
-10.8.162.100 hostname=DVTCPDPS28 postgresql_exists=false
-10.8.162.101 hostname=DVTCPDPS29 postgresql_exists=false
-10.8.162.102 hostname=DVTCPDPS30 postgresql_exists=false
+10.64.48.96 hostname=DUKEPDPS42 postgresql_exists=false patroni_tags="datacenter=dc1"
+10.64.48.97 hostname=DUKEPDPS43 postgresql_exists=false patroni_tags="datacenter=dc1"
+10.64.48.98 hostname=DUKEPDPS44 postgresql_exists=false patroni_tags="datacenter=dc1"
+10.8.162.100 hostname=DVTCPDPS28 postgresql_exists=false patroni_tags="datacenter=dc2"
+10.8.162.101 hostname=DVTCPDPS29 postgresql_exists=false patroni_tags="datacenter=dc2"
+10.8.162.102 hostname=DVTCPDPS30 postgresql_exists=false patroni_tags="datacenter=dc2"
 #10.128.64.144 hostname=pgnode04 postgresql_exists=false new_node=true
 
 [postgres_cluster:children]
@@ -57,8 +57,9 @@ master
 replica
 
 # if pgbackrest_install: true and "repo_host" is set
-[pgbackrest]  # optional (Dedicated Repository Host)
-
+[pgbackrest]
+ansible_user='elduco'
+ansible_ssh_pass='!Digital2024'
 
 # Connection settings
 [all:vars]
@@ -71,5 +72,5 @@ ansible_ssh_pass='!Digital2024'  # "sshpass" package is required for use "ansibl
 
 [pgbackrest:vars]
 ansible_user='elduco'
-ansible_ssh_pass='Th1$IsIt!'
+ansible_ssh_pass='!Digital2024'
 
