@@ -22,13 +22,10 @@ jobs:
           - distro: debian11
             tag: latest
             namespace: geerlingguy
-          - distro: debian10
+          - distro: ubuntu2404
             tag: latest
             namespace: geerlingguy
           - distro: ubuntu2204
-            tag: latest
-            namespace: geerlingguy
-          - distro: ubuntu2004
             tag: latest
             namespace: geerlingguy
           - distro: rockylinux8
@@ -50,9 +47,6 @@ jobs:
             tag: latest
             namespace: glillico
           - distro: centosstream9
-            tag: latest
-            namespace: glillico
-          - distro: centosstream8
             tag: latest
             namespace: glillico
 
