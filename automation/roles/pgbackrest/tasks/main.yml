@@ -22,16 +22,13 @@
       retries: 3
 
     - name: Add pgdg repository and signing key
-      ansible.builtin.deb822_repository:
-        name: "{{ pgbackrest_repo_name | default('apt-postgresql-org') }}"
-        types: [deb]
-        uris: "https://apt.postgresql.org/pub/repos/apt/"
-        signed_by: "https://apt.postgresql.org/pub/repos/apt/ACCC4CF8.asc"
-        suites: "{{ ansible_distribution_release }}-pgdg"
-        components: [main]
+      ansible.builtin.apt_repository:
+        repo: "deb https://apt.postgresql.org/pub/repos/apt/ {{ ansible_distribution_release }}-pgdg main"
         state: present
-        enabled: true
+        filename: "{{ pgbackrest_repo_name | default('apt-postgresql-org') }}"
+        key: "https://apt.postgresql.org/pub/repos/apt/ACCC4CF8.asc"
       when: ansible_os_family == "Debian"
+
 
     - name: Update apt cache
       ansible.builtin.apt:
