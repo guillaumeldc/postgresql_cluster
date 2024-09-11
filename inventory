@@ -71,6 +71,6 @@ ansible_ssh_pass='!Digital2024'  # "sshpass" package is required for use "ansibl
 ansible_python_interpreter='/usr/bin/python3'  # is required for use python3
 
 [pgbackrest:vars]
-ansible_user='elduco'
-ansible_ssh_pass='!Digital2024'
+; ansible_user='elduco'
+; ansible_ssh_pass='!Digital2024'
 
