@@ -30,13 +30,13 @@
 
 # if with_haproxy_load_balancing: true
 [balancers]
-10.64.48.95
-10.64.48.96
-10.64.48.97
-10.64.48.98
-10.8.162.100
-10.8.162.101
-10.8.162.102
+10.64.48.95 balancer_tags="datacenter=dc1"
+10.64.48.96 balancer_tags="datacenter=dc1"
+10.64.48.97 balancer_tags="datacenter=dc1"
+10.64.48.98 balancer_tags="datacenter=dc1"
+10.8.162.100 balancer_tags="datacenter=dc2"
+10.8.162.101 balancer_tags="datacenter=dc2"
+10.8.162.102 balancer_tags="datacenter=dc2"
 #10.128.64.144 new_node=true
 
 # PostgreSQL nodes
@@ -68,7 +68,7 @@ ansible_ssh_port='22'
 ansible_user='elduco'
 ansible_ssh_pass='!Digital2024'  # "sshpass" package is required for use "ansible_ssh_pass"
 #ansible_ssh_private_key_file=
-#ansible_python_interpreter='/usr/bin/python3'  # is required for use python3
+ansible_python_interpreter='/usr/bin/python3'  # is required for use python3
 
 [pgbackrest:vars]
 ansible_user='elduco'
