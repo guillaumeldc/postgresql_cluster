@@ -58,8 +58,8 @@ replica
 
 # if pgbackrest_install: true and "repo_host" is set
 [pgbackrest]
-ansible_user='elduco'
-ansible_ssh_pass='!Digital2024'
+; ansible_user='elduco'
+; ansible_ssh_pass='!Digital2024'
 
 # Connection settings
 [all:vars]
