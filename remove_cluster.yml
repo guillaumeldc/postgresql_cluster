@@ -23,7 +23,25 @@
           ansible.builtin.file:
             path: "{{ postgresql_data_dir }}"
             state: absent
-            purge: true
+        - name: Stop PostgreSQL service
+          ansible.builtin.service:
+            name: postgresql
+            state: stopped
+            enabled: false
+
+        - name: Remove PostgreSQL data directory
+          ansible.builtin.file:
+            path: /var/lib/postgresql
+            state: absent
+
+        - name: Uninstall PostgreSQL and related packages
+          ansible.builtin.apt:
+            name:
+              - postgresql
+              - postgresql-client
+              - postgresql-contrib
+            state: absent
+            purge: yes
       when: remove_postgres | default(true) | bool
       ignore_errors: true
     - block:
