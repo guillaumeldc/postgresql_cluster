@@ -23,7 +23,8 @@
           ansible.builtin.file:
             path: "{{ postgresql_data_dir }}"
             state: absent
-      when: remove_postgres | default(false) | bool
+            purge: true
+      when: remove_postgres | default(true) | bool
       ignore_errors: true
     - block:
         - name: Delete PgBackRest repository
@@ -35,7 +36,7 @@
           ansible.builtin.file:
             path: /etc/cron.d/pgbackrest
             state: absent
-      when: pgbackrest_install | default(false) | bool
+      when: pgbackrest_install | default(true) | bool
       ignore_errors: true
 
 - name: remove_cluster.yml | Consul Cluster Play
@@ -59,7 +60,7 @@
           ansible.builtin.file:
             path: /lib/systemd/system/consul.service
             state: absent
-      when: remove_consul | default(false) | bool
+      when: remove_consul | default(true) | bool
       ignore_errors: true
 
 - name: remove_cluster.yml | Etcd Cluster Play
@@ -79,5 +80,5 @@
           ansible.builtin.file:
             path: "{{ etcd_data_dir }}/member"
             state: absent
-      when: remove_etcd | default(false) | bool
+      when: remove_etcd | default(true) | bool
       ignore_errors: true
