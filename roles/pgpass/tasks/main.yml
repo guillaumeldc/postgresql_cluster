@@ -1,5 +1,15 @@
 ---
 
+- name: "Ensure PostgreSQL home directory exists"
+  become: true
+  become_user: postgres
+  ansible.builtin.file:
+    path: "{{ postgresql_home_dir }}"
+    state: directory
+    owner: postgres
+    group: postgres
+    mode: "0700"
+
 - name: "Configure a password file ({{ postgresql_home_dir }}/.pgpass)"
   become: true
   become_user: postgres
