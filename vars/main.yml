@@ -90,7 +90,7 @@ vip_manager_mask: "24"  # netmask for the virtual ip
 
 # DCS (Distributed Consensus Store)
 dcs_exists: false  # or 'true' if you don't want to deploy a new etcd cluster
-dcs_type: "etcd"  # or 'consul'
+dcs_type: "consul"  # or 'consul'
 
 # if dcs_type: "etcd" and dcs_exists: false
 etcd_version: "3.5.15"  # version for deploy etcd cluster
@@ -126,7 +126,7 @@ consul_syslog_enable: true  # Enable logging to syslog
 consul_iface: "{{ ansible_default_ipv4.interface }}"  # specify the interface name with a Private IP (ex. "enp7s0")
 # TLS
 # You can enable TLS encryption by dropping a CA certificate, server certificate, and server key in roles/consul/files/
-consul_tls_enable: false
+consul_tls_enable: true
 consul_tls_ca_crt: "ca.crt"
 consul_tls_server_crt: "server.crt"
 consul_tls_server_key: "server.key"

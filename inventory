@@ -22,34 +22,34 @@
 
 # if dcs_exists: false and dcs_type: "consul"
 [consul_instances]  # recommendation: 3 or 5-7 nodes
-# 10.128.64.140 consul_node_role=server consul_bootstrap_expect=true consul_datacenter=dc1
-# 10.128.64.142 consul_node_role=server consul_bootstrap_expect=true consul_datacenter=dc1
-# 10.128.64.143 consul_node_role=server consul_bootstrap_expect=true consul_datacenter=dc1
-#10.128.64.144 consul_node_role=client consul_datacenter=dc1
-#10.128.64.145 consul_node_role=client consul_datacenter=dc2
+# 10.128.64.140 consul_node_role=server consul_bootstrap_expect=true consul_datacenter=ddtc
+# 10.128.64.142 consul_node_role=server consul_bootstrap_expect=true consul_datacenter=ddtc
+# 10.128.64.143 consul_node_role=server consul_bootstrap_expect=true consul_datacenter=ddtc
+#10.128.64.144 consul_node_role=client consul_datacenter=ddtc
+#10.128.64.145 consul_node_role=client consul_datacenter=dvtc
 
 # if with_haproxy_load_balancing: true
 [balancers]
-10.64.48.95 balancer_tags="datacenter=dc1"
-10.64.48.96 balancer_tags="datacenter=dc1"
-10.64.48.97 balancer_tags="datacenter=dc1"
-10.64.48.98 balancer_tags="datacenter=dc1"
-10.8.162.100 balancer_tags="datacenter=dc2"
-10.8.162.101 balancer_tags="datacenter=dc2"
-10.8.162.102 balancer_tags="datacenter=dc2"
+10.64.48.95 balancer_tags="datacenter=ddtc"
+10.64.48.96 balancer_tags="datacenter=ddtc"
+10.64.48.97 balancer_tags="datacenter=ddtc"
+10.64.48.98 balancer_tags="datacenter=ddtc"
+10.8.162.100 balancer_tags="datacenter=dvtc"
+10.8.162.101 balancer_tags="datacenter=dvtc"
+10.8.162.102 balancer_tags="datacenter=dvtc"
 #10.128.64.144 new_node=true
 
 # PostgreSQL nodes
 [master]
-10.64.48.95 hostname=DUKEPDPS41 postgresql_exists=false patroni_tags="datacenter=dc1"
+10.64.48.95 hostname=DUKEPDPS41 postgresql_exists=false patroni_tags="datacenter=ddtc"
 
 [replica]
-10.64.48.96 hostname=DUKEPDPS42 postgresql_exists=false patroni_tags="datacenter=dc1"
-10.64.48.97 hostname=DUKEPDPS43 postgresql_exists=false patroni_tags="datacenter=dc1"
-10.64.48.98 hostname=DUKEPDPS44 postgresql_exists=false patroni_tags="datacenter=dc1"
-10.8.162.100 hostname=DVTCPDPS28 postgresql_exists=false patroni_tags="datacenter=dc2"
-10.8.162.101 hostname=DVTCPDPS29 postgresql_exists=false patroni_tags="datacenter=dc2"
-10.8.162.102 hostname=DVTCPDPS30 postgresql_exists=false patroni_tags="datacenter=dc2"
+10.64.48.96 hostname=DUKEPDPS42 postgresql_exists=false patroni_tags="datacenter=ddtc"
+10.64.48.97 hostname=DUKEPDPS43 postgresql_exists=false patroni_tags="datacenter=ddtc"
+10.64.48.98 hostname=DUKEPDPS44 postgresql_exists=false patroni_tags="datacenter=ddtc"
+10.8.162.100 hostname=DVTCPDPS28 postgresql_exists=false patroni_tags="datacenter=dvtc"
+10.8.162.101 hostname=DVTCPDPS29 postgresql_exists=false patroni_tags="datacenter=dvtc"
+10.8.162.102 hostname=DVTCPDPS30 postgresql_exists=false patroni_tags="datacenter=dvtc"
 #10.128.64.144 hostname=pgnode04 postgresql_exists=false new_node=true
 
 [postgres_cluster:children]
