@@ -85,7 +85,8 @@
   hosts: consul_instances
   become: yes
   vars:
-    netplan_renderer: networkd 
+    netplan_renderer: networkd
+    remove_dnsmasq: true
   tasks:
 
     - name: Stop and disable dnsmasq service
