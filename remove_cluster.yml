@@ -126,7 +126,7 @@
         path: /etc/resolv.conf
         state: absent
         force: yes
-      when: resolv_conf_stat.exists and not resolv_conf_stat.islnk
+      when: resolv_conf_stat.stat.exists and not resolv_conf_stat.stat.islnk
 
     - name: Ensure /etc/resolv.conf is a symlink to /run/systemd/resolve/stub-resolv.conf
       file:
