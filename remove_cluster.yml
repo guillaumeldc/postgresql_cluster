@@ -81,6 +81,74 @@
       when: remove_consul | default(true) | bool
       ignore_errors: true
 
+- name: Revert DNS configuration to use Netplan settings
+  hosts: consul_instances
+  become: yes
+  tasks:
+
+    - name: Stop and disable dnsmasq service
+      systemd:
+        name: dnsmasq
+        enabled: no
+        state: stopped
+
+    - name: Remove dnsmasq package (optional)
+      apt:
+        name: dnsmasq
+        state: absent
+      when: remove_dnsmasq | default(False)
+
+    - name: Remove dnsmasq configuration files
+      file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - /etc/dnsmasq.conf
+        - /etc/dnsmasq.d
+        - /etc/dnsmasq.d/*
+      ignore_errors: yes
+
+    - name: Ensure systemd-resolved is enabled and running
+      systemd:
+        name: systemd-resolved
+        enabled: yes
+        state: started
+
+    - name: Remove resolv.conf symbolic link if it exists
+      file:
+        path: /etc/resolv.conf
+        state: absent
+        force: yes
+      when: resolv_conf_is_symlink.stat.islnk
+      register: resolv_conf_removed
+
+    - name: Check if /etc/resolv.conf is a symbolic link
+      stat:
+        path: /etc/resolv.conf
+      register: resolv_conf_is_symlink
+
+    - name: Generate new resolv.conf from Netplan configuration
+      command: netplan generate
+
+    - name: Apply Netplan configuration
+      command: netplan apply
+
+    - name: Restart systemd-networkd
+      systemd:
+        name: systemd-networkd
+        state: restarted
+
+    - name: Verify DNS resolution
+      shell: ping -c 1 www.google.com
+      register: ping_output
+      failed_when: ping_output.rc != 0
+      ignore_errors: yes
+
+    - name: Display DNS resolution status
+      debug:
+        msg: "DNS resolution test result: {{ ping_output.stdout }}"
+
+
 - name: remove_cluster.yml | Etcd Cluster Play
   hosts: etcd_cluster
   become: true
