@@ -114,18 +114,17 @@
         enabled: yes
         state: started
 
+    - name: Check if /etc/resolv.conf is a symbolic link
+      stat:
+        path: /etc/resolv.conf
+      register: resolv_conf_is_symlink
+
     - name: Remove resolv.conf symbolic link if it exists
       file:
         path: /etc/resolv.conf
         state: absent
         force: yes
       when: resolv_conf_is_symlink.stat.islnk
-      register: resolv_conf_removed
-
-    - name: Check if /etc/resolv.conf is a symbolic link
-      stat:
-        path: /etc/resolv.conf
-      register: resolv_conf_is_symlink
 
     - name: Generate new resolv.conf from Netplan configuration
       command: netplan generate
