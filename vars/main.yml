@@ -135,7 +135,9 @@ consul_recursors: # List of upstream DNS servers
   - "10.64.242.144"
 consul_dnsmasq_enable: true  # Enable DNS forwarding with Dnsmasq
 consul_dnsmasq_cache: 0  # dnsmasq cache-size (0 - disable caching)
-consul_dnsmasq_servers: "{{ nameservers }}" # Upstream DNS servers used by dnsmasq
+consul_dnsmasq_servers: 
+ - "{{ nameservers }}" # Upstream DNS servers used by dnsmasq
+ - "10.64.242.144"
 consul_join: []  # List of LAN servers of an existing consul cluster, to join.
 # - "10.128.64.140"
 # - "10.128.64.142"
