@@ -18,6 +18,10 @@
       ansible.builtin.include_vars: "vars/main.yml"
       tags: always
 
+    - name: Set agent token fact
+      set_fact:
+        consul_acl_agent_token: "{{ consul_acl_agent_token }}"
+
     - name: Include system variables
       ansible.builtin.include_vars: "vars/system.yml"
       tags: always

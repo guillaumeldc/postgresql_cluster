@@ -142,15 +142,15 @@ consul_dnsmasq_servers:
 # ACL
 # Enable ACLs
 consul_acl_enable: true
-consul_acl_default_policy: "allow"   # Start with 'allow' to prevent disruptions
-consul_acl_down_policy: "allow"
+consul_acl_default_policy: "deny"   # Start with 'allow' to prevent disruptions
+consul_acl_down_policy: "deny"
 consul_acl_ttl: "30s"                # Adjust as needed
 consul_acl_token_persistence: true
 consul_acl_datacenter: "{{ consul_datacenter }}"
 
 # Tokens (to be set after bootstrapping)
-consul_acl_token: ""                 # Default token
-consul_acl_agent_token: ""           # Agent token
+consul_acl_token: "beab1128-04b2-42f6-8314-73e1a3cfd991"                 # Default token
+consul_acl_agent_token: "35b03bca-587d-2a99-cb10-1c117c1cd130"           # Agent token
 consul_acl_agent_master_token: ""    # Agent master token (for recovery)
 
 # (Optional) If you plan to use replication tokens
