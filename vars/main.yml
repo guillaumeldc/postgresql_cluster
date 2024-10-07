@@ -117,7 +117,7 @@ consul_config_path: "/etc/consul"
 consul_configd_path: "{{ consul_config_path }}/conf.d"
 consul_data_path: "/var/lib/consul"
 consul_domain: "consul"  # Consul domain name
-consul_datacenter: "dc1"  # Datacenter label (can be specified for each host in the inventory)
+# consul_datacenter: "dc1"  # Datacenter label (can be specified for each host in the inventory)
 consul_disable_update_check: true  # Disables automatic checking for security bulletins and new version releases
 consul_enable_script_checks: true  # This controls whether health checks that execute scripts are enabled on this agent
 consul_enable_local_script_checks: true  # Enable them when they are defined in the local configuration files
@@ -151,6 +151,7 @@ consul_acl_datacenter: "{{ consul_datacenter }}"
 # Tokens (to be set after bootstrapping)
 consul_acl_token: ""                                            # Default token, removing to enforce security
 consul_acl_agent_token: "35b03bca-587d-2a99-cb10-1c117c1cd130"  # Agent token
+consul_acl_master_token: "beab1128-04b2-42f6-8314-73e1a3cfd991"
 consul_acl_agent_master_token: ""                               # Agent master token (for recovery)
 
 # (Optional) If you plan to use replication tokens
