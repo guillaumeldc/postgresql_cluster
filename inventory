@@ -12,9 +12,9 @@
 
 # if dcs_exists: false and dcs_type: "etcd"
 [etcd_cluster]  # recommendation: 3, or 5-7 nodes
-; 10.64.48.95
-; 10.64.48.96
-; 10.64.48.97
+; 10.64.48.171
+; 10.64.48.172
+; 10.64.48.173
 ; 10.64.48.98
 ; 10.8.162.100
 ; 10.8.162.101
@@ -23,40 +23,23 @@
 # if dcs_exists: false and dcs_type: "consul"
 [consul_instances]  # recommendation: 3 or 5-7 nodes
 # Datacenter: ddtc
-10.64.48.95 consul_node_role=server consul_bootstrap_expect=true consul_datacenter=ddtc
-10.64.48.96 consul_node_role=server consul_bootstrap_expect=true consul_datacenter=ddtc
-10.64.48.97 consul_node_role=server consul_bootstrap_expect=true consul_datacenter=ddtc
-10.64.48.98 consul_node_role=client consul_datacenter=ddtc
-
-# Datacenter: dvtc
-10.8.162.100 consul_node_role=server consul_bootstrap_expect=true consul_datacenter=dvtc
-10.8.162.101 consul_node_role=server consul_bootstrap_expect=true consul_datacenter=dvtc
-10.8.162.102 consul_node_role=server consul_bootstrap_expect=true consul_datacenter=dvtc
-10.8.162.77 consul_node_role=client consul_datacenter=dvtc
+10.64.48.171 consul_node_role=server consul_bootstrap_expect=true consul_datacenter=ddtc
+10.64.48.172 consul_node_role=server consul_bootstrap_expect=true consul_datacenter=ddtc
+10.64.48.173 consul_node_role=client consul_datacenter=ddtc
 
 # if with_haproxy_load_balancing: true
 [balancers]
-10.64.48.95 balancer_tags="datacenter=ddtc"
-10.64.48.96 balancer_tags="datacenter=ddtc"
-10.64.48.97 balancer_tags="datacenter=ddtc"
-10.64.48.98 balancer_tags="datacenter=ddtc"
-10.8.162.77 balancer_tags="datacenter=dvtc"
-10.8.162.100 balancer_tags="datacenter=dvtc"
-10.8.162.101 balancer_tags="datacenter=dvtc"
-10.8.162.102 balancer_tags="datacenter=dvtc"
+10.64.48.171 balancer_tags="datacenter=ddtc"
+10.64.48.172 balancer_tags="datacenter=ddtc"
+10.64.48.173 balancer_tags="datacenter=ddtc"
 
 # PostgreSQL nodes
 [master]
-10.64.48.95 hostname=DUKEPDPS41 postgresql_exists=false patroni_tags="datacenter=ddtc"
+10.64.48.171 hostname=DUKEPDPS41 postgresql_exists=false patroni_tags="datacenter=ddtc"
 
 [replica]
-10.64.48.96 hostname=DUKEPDPS42 postgresql_exists=false patroni_tags="datacenter=ddtc"
-10.64.48.97 hostname=DUKEPDPS43 postgresql_exists=false patroni_tags="datacenter=ddtc"
-10.64.48.98 hostname=DUKEPDPS44 postgresql_exists=false patroni_tags="datacenter=ddtc"
-10.8.162.100 hostname=DVTCPDPS28 postgresql_exists=false patroni_tags="datacenter=dvtc"
-10.8.162.101 hostname=DVTCPDPS29 postgresql_exists=false patroni_tags="datacenter=dvtc"
-10.8.162.102 hostname=DVTCPDPS30 postgresql_exists=false patroni_tags="datacenter=dvtc"
-#10.128.64.144 hostname=pgnode04 postgresql_exists=false new_node=true
+10.64.48.172 hostname=DUKEPDPS42 postgresql_exists=false patroni_tags="datacenter=ddtc"
+10.64.48.173 hostname=DUKEPDPS43 postgresql_exists=false patroni_tags="datacenter=ddtc"
 
 [postgres_cluster:children]
 master
