@@ -35,11 +35,11 @@
 
 # PostgreSQL nodes
 [master]
-10.64.48.171 hostname=DUKEPDPS41 postgresql_exists=false patroni_tags="datacenter=ddtc"
+10.64.48.171 hostname=DUKEPDPS45 postgresql_exists=false patroni_tags="datacenter=ddtc"
 
 [replica]
-10.64.48.172 hostname=DUKEPDPS42 postgresql_exists=false patroni_tags="datacenter=ddtc"
-10.64.48.173 hostname=DUKEPDPS43 postgresql_exists=false patroni_tags="datacenter=ddtc"
+10.64.48.172 hostname=DUKEPDPS46 postgresql_exists=false patroni_tags="datacenter=ddtc"
+10.64.48.173 hostname=DUKEPDPS47 postgresql_exists=false patroni_tags="datacenter=ddtc"
 
 [postgres_cluster:children]
 master
