@@ -48,7 +48,7 @@
     - name: Install vip-manager
       ansible.builtin.apt:
         force_apt_get: true
-        deb: "/tmp/{{ vip_manager_package_file | basename }}"
+        deb: "/tmp/_manager_package_file | basename }}"
         state: present
       register: apt_status
       until: apt_status is success
