@@ -56,6 +56,7 @@
 10.8.162.100 hostname=DVTCPDPS28 postgresql_exists=false patroni_tags="datacenter=dvtc"
 10.8.162.101 hostname=DVTCPDPS29 postgresql_exists=false patroni_tags="datacenter=dvtc"
 10.8.162.102 hostname=DVTCPDPS30 postgresql_exists=false patroni_tags="datacenter=dvtc"
+10.8.162.77 hostname=DVTCPDPS06 postgresql_exists=false patroni_tags="datacenter=dvtc"
 #10.128.64.144 hostname=pgnode04 postgresql_exists=false new_node=true
 
 [postgres_cluster:children]
