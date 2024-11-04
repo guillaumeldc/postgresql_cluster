@@ -26,9 +26,7 @@
 10.64.48.95 consul_node_role=server consul_bootstrap_expect=true consul_datacenter=ddtc
 10.64.48.96 consul_node_role=server consul_bootstrap_expect=true consul_datacenter=ddtc
 10.64.48.97 consul_node_role=server consul_bootstrap_expect=true consul_datacenter=ddtc
-10.64.48.98 consul_node_role=client consul_datacenter=ddtc
-
-# Datacenter: dvtc
+10.64.48.98 consul_node_role=server consul_bootstrap_expect=true consul_datacenter=ddtc
 10.8.162.100 consul_node_role=server consul_bootstrap_expect=true consul_datacenter=dvtc
 10.8.162.101 consul_node_role=server consul_bootstrap_expect=true consul_datacenter=dvtc
 10.8.162.102 consul_node_role=server consul_bootstrap_expect=true consul_datacenter=dvtc
