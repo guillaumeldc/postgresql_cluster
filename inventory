@@ -15,7 +15,7 @@
 ; 10.64.48.95
 ; 10.64.48.96
 ; 10.64.48.97
-; 10.64.48.98
+; 98.188.24.42
 ; 10.8.162.100
 ; 10.8.162.101
 ; 10.8.162.102
@@ -26,18 +26,18 @@
 10.64.48.95 consul_node_role=server consul_bootstrap_expect=true consul_datacenter=dc1
 10.64.48.96 consul_node_role=server consul_bootstrap_expect=true consul_datacenter=dc1
 10.64.48.97 consul_node_role=server consul_bootstrap_expect=true consul_datacenter=dc1
-10.64.48.98 consul_node_role=server consul_bootstrap_expect=true consul_datacenter=dc1
+98.188.24.42 consul_node_role=server consul_bootstrap_expect=true consul_datacenter=dc1
 10.8.162.100 consul_node_role=server consul_bootstrap_expect=true consul_datacenter=dc1
 10.8.162.101 consul_node_role=server consul_bootstrap_expect=true consul_datacenter=dc1
 10.8.162.102 consul_node_role=server consul_bootstrap_expect=true consul_datacenter=dc1
 10.8.162.77 consul_node_role=client consul_datacenter=dc1
-
+; ELCNPDPS44 ansible_host=98.188.24.42
 # if with_haproxy_load_balancing: true
 [balancers]
 10.64.48.95 balancer_tags="datacenter=dc1"
 10.64.48.96 balancer_tags="datacenter=dc1"
 10.64.48.97 balancer_tags="datacenter=dc1"
-10.64.48.98 balancer_tags="datacenter=dc1"
+98.188.24.42 balancer_tags="datacenter=dc1"
 10.8.162.77 balancer_tags="datacenter=dc1"
 10.8.162.100 balancer_tags="datacenter=dc1"
 10.8.162.101 balancer_tags="datacenter=dc1"
@@ -50,7 +50,7 @@
 [replica]
 10.64.48.96 hostname=DUKEPDPS42 postgresql_exists=false patroni_tags="datacenter=dc1"
 10.64.48.97 hostname=DUKEPDPS43 postgresql_exists=false patroni_tags="datacenter=dc1"
-10.64.48.98 hostname=DUKEPDPS44 postgresql_exists=false patroni_tags="datacenter=dc1"
+98.188.24.42 hostname=DUKEPDPS44 postgresql_exists=false patroni_tags="datacenter=dc1"
 10.8.162.100 hostname=DVTCPDPS28 postgresql_exists=false patroni_tags="datacenter=dc1"
 10.8.162.101 hostname=DVTCPDPS29 postgresql_exists=false patroni_tags="datacenter=dc1"
 10.8.162.102 hostname=DVTCPDPS30 postgresql_exists=false patroni_tags="datacenter=dc1"
@@ -77,4 +77,3 @@ ansible_python_interpreter='/usr/bin/python3'  # is required for use python3
 [pgbackrest:vars]
 ; ansible_user='elduco'
 ; ansible_ssh_pass='!Digital2024'
-
