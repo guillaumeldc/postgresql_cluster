@@ -15,16 +15,16 @@ patroni_cluster_name: "postgres-cluster"  # the cluster name (must be unique for
 patroni_install_version: "3.3.2"  # or 'latest'
 
 patroni_superuser_username: "postgres"
-patroni_superuser_password: "3Digital2019!"  # Please specify a password. If not defined, will be generated automatically during deployment.
+patroni_superuser_password: "HHKJ823JLLdkkk34klJJ"  # Please specify a password. If not defined, will be generated automatically during deployment.
 patroni_replication_username: "replicator"
-patroni_replication_password: "3Digital2019!"  # Please specify a password. If not defined, will be generated automatically during deployment.
+patroni_replication_password: "HHKJ823JLLdkkk34klJJ"  # Please specify a password. If not defined, will be generated automatically during deployment.
 
 synchronous_mode: false  # or 'true' for enable synchronous database replication
 synchronous_mode_strict: false  # if 'true' then block all client writes to the master, when a synchronous replica is not available
 synchronous_node_count: 1  # number of synchronous standby databases
 
 # Load Balancing
-with_haproxy_load_balancing: false  # or 'true' if you want to install and configure the load-balancing
+with_haproxy_load_balancing: true  # or 'true' if you want to install and configure the load-balancing
 haproxy_listen_port:
   master: 5000
   replicas: 5001
@@ -104,7 +104,7 @@ patroni_etcd_hosts: []  # list of servers of an existing etcd cluster
 #  - { host: "10.128.64.143", port: "2379" }
 patroni_etcd_namespace: "service"  # (optional) etcd namespace (prefix)
 patroni_etcd_username: elduco" # (optional) username for etcd authentication
-patroni_etcd_password: "3Digital2019!" # (optional) password for etcd authentication
+patroni_etcd_password: "HHKJ823JLLdkkk34klJJ" # (optional) password for etcd authentication
 patroni_etcd_protocol: "https" # (optional) http or https, if not specified http is used
 
 # more options you can specify in the roles/patroni/templates/patroni.yml.j2
