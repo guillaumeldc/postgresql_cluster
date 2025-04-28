@@ -37,11 +37,11 @@
 10.64.48.95 balancer_tags="datacenter=dc1"
 10.64.48.96 balancer_tags="datacenter=dc1"
 10.64.48.97 balancer_tags="datacenter=dc1"
-98.188.24.42 balancer_tags="datacenter=dc1"
+; 98.188.24.42 balancer_tags="datacenter=dc1"
 ; 10.8.162.77 balancer_tags="datacenter=dc1"
-10.8.162.100 balancer_tags="datacenter=dc1"
-10.8.162.101 balancer_tags="datacenter=dc1"
-10.8.162.102 balancer_tags="datacenter=dc1"
+; 10.8.162.100 balancer_tags="datacenter=dc1"
+; 10.8.162.101 balancer_tags="datacenter=dc1"
+; 10.8.162.102 balancer_tags="datacenter=dc1"
 
 # PostgreSQL nodes
 [master]
@@ -50,10 +50,10 @@
 [replica]
 10.64.48.96 hostname=DUKEPDPS42 postgresql_exists=false patroni_tags="datacenter=dc1"
 10.64.48.97 hostname=DUKEPDPS43 postgresql_exists=false patroni_tags="datacenter=dc1"
-98.188.24.42 hostname=DUKEPDPS44 postgresql_exists=false patroni_tags="datacenter=dc1"
-10.8.162.100 hostname=DVTCPDPS28 postgresql_exists=false patroni_tags="datacenter=dc1"
-10.8.162.101 hostname=DVTCPDPS29 postgresql_exists=false patroni_tags="datacenter=dc1"
-10.8.162.102 hostname=DVTCPDPS30 postgresql_exists=false patroni_tags="datacenter=dc1"
+; 98.188.24.42 hostname=DUKEPDPS44 postgresql_exists=false patroni_tags="datacenter=dc1"
+; 10.8.162.100 hostname=DVTCPDPS28 postgresql_exists=false patroni_tags="datacenter=dc1"
+; 10.8.162.101 hostname=DVTCPDPS29 postgresql_exists=false patroni_tags="datacenter=dc1"
+; 10.8.162.102 hostname=DVTCPDPS30 postgresql_exists=false patroni_tags="datacenter=dc1"
 #10.128.64.144 hostname=pgnode04 postgresql_exists=false new_node=true
 
 [postgres_cluster:children]
