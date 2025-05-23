@@ -28,11 +28,11 @@
 10.64.48.97 consul_node_role=server postgresql_exists=true consul_bootstrap_expect=5 consul_datacenter=dc1
 
 # ─── DC‑2 (WAN segment) ──────────────────────────────
-10.8.162.100 consul_node_role=server postgresql_exists=true consul_bootstrap_expect=5 consul_datacenter=dc1 consul_segment=dc2
-10.8.162.101 consul_node_role=server postgresql_exists=true consul_bootstrap_expect=5 consul_datacenter=dc1 consul_segment=dc2
+10.8.162.100 consul_node_role=server postgresql_exists=true consul_bootstrap_expect=5 consul_datacenter=dc1
+10.8.162.101 consul_node_role=server postgresql_exists=true consul_bootstrap_expect=5 consul_datacenter=dc1
 
 # Optional clients / app hosts
-10.8.162.102 consul_node_role=client postgresql_exists=true consul_datacenter=dc1 consul_segment=dc2
+10.8.162.102 consul_node_role=client postgresql_exists=true consul_datacenter=dc1
 
 [balancers]
 10.64.48.95 balancer_tags="datacenter=dc1"
