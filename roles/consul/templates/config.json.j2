@@ -8,6 +8,9 @@
     "node_name": "{{ consul_node_name }}",
     {% endif %}
     "datacenter": "{{ consul_datacenter }}",
+    {% if consul_segment is defined %}
+    "segment": "{{ consul_segment }}",
+    {% endif %}
     "domain": "{{ consul_domain }}",
     {% if consul_alt_domain %}
     "alt_domain": "{{ consul_alt_domain }}",

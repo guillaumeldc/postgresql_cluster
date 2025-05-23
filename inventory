@@ -21,40 +21,43 @@
 ; 10.8.162.102
 
 # if dcs_exists: false and dcs_type: "consul"
-[consul_instances]  # recommendation: 3 or 5-7 nodes
-# Datacenter: dc1
-10.64.48.95 consul_node_role=server consul_bootstrap_expect=true consul_datacenter=dc1
-10.64.48.96 consul_node_role=server consul_bootstrap_expect=true consul_datacenter=dc1
-10.64.48.97 consul_node_role=server consul_bootstrap_expect=true consul_datacenter=dc1
-; 98.188.24.42 consul_node_role=server consul_bootstrap_expect=true consul_datacenter=dc1
-10.8.162.100 consul_node_role=server consul_bootstrap_expect=true consul_datacenter=dc1
-10.8.162.101 consul_node_role=server consul_bootstrap_expect=true consul_datacenter=dc1
-; 10.8.162.102 consul_node_role=client consul_bootstrap_expect=true consul_datacenter=dc1
-; 10.8.162.77 consul_node_role=client consul_datacenter=dc1
-; ELCNPDPS44 ansible_host=98.188.24.42
-# if with_haproxy_load_balancing: true
+[consul_instances]                # 5 servers, odd ⇒ quorum survives 2 failures
+# ─── DC‑1 ─────────────────────────────────────────────
+10.64.48.95 consul_node_role=server consul_bootstrap_expect=5 consul_datacenter=dc1
+10.64.48.96 consul_node_role=server consul_bootstrap_expect=5 consul_datacenter=dc1
+10.64.48.97 consul_node_role=server consul_bootstrap_expect=5 consul_datacenter=dc1
+
+# ─── DC‑2 (WAN segment) ──────────────────────────────
+10.8.162.100 consul_node_role=server consul_bootstrap_expect=5 consul_datacenter=dc1 consul_segment=dc2
+10.8.162.101 consul_node_role=server consul_bootstrap_expect=5 consul_datacenter=dc1 consul_segment=dc2
+
+# Optional clients / app hosts
+10.8.162.102 consul_node_role=client consul_datacenter=dc1 consul_segment=dc2
+
 [balancers]
 10.64.48.95 balancer_tags="datacenter=dc1"
 10.64.48.96 balancer_tags="datacenter=dc1"
 10.64.48.97 balancer_tags="datacenter=dc1"
 ; 98.188.24.42 balancer_tags="datacenter=dc1"
 ; 10.8.162.77 balancer_tags="datacenter=dc1"
-10.8.162.100 balancer_tags="datacenter=dc1"
-10.8.162.101 balancer_tags="datacenter=dc1"
-10.8.162.102 balancer_tags="datacenter=dc1"
+10.8.162.100 balancer_tags="datacenter=dc2"
+10.8.162.101 balancer_tags="datacenter=dc2"
+; 10.8.162.102 balancer_tags="datacenter=dc1"
 
 # PostgreSQL nodes
 [master]
-10.64.48.95 hostname=DUKEPDPS41 postgresql_exists=false patroni_tags="datacenter=dc1"
-
+# ─── DC‑1 : primary + sync stand‑bys ──────────────────────────────
+10.64.48.95 hostname=DUKEPDPS41 patroni_tags="datacenter=dc1,failover_priority=90"
 [replica]
-10.64.48.96 hostname=DUKEPDPS42 postgresql_exists=false patroni_tags="datacenter=dc1"
-10.64.48.97 hostname=DUKEPDPS43 postgresql_exists=false patroni_tags="datacenter=dc1"
-; 98.188.24.42 hostname=DUKEPDPS44 postgresql_exists=false patroni_tags="datacenter=dc1"
-10.8.162.100 hostname=DVTCPDPS28 postgresql_exists=false patroni_tags="datacenter=dc1"
-10.8.162.101 hostname=DVTCPDPS29 postgresql_exists=false patroni_tags="datacenter=dc1"
-; 10.8.162.102 hostname=DVTCPDPS30 postgresql_exists=false patroni_tags="datacenter=dc1"
-#10.128.64.144 hostname=pgnode04 postgresql_exists=false new_node=true
+10.64.48.96 hostname=DUKEPDPS42 patroni_tags="datacenter=dc1,failover_priority=80"
+
+10.64.48.97 hostname=DUKEPDPS43 patroni_tags="datacenter=dc1,failover_priority=70"
+
+# ─── DC‑2 : async replicas only (no WAN latency on commits) ───────
+10.8.162.100 hostname=DVTCPDPS28 patroni_tags="datacenter=dc2,nosync=true,failover_priority=10"
+
+10.8.162.101 hostname=DVTCPDPS29 patroni_tags="datacenter=dc2,nosync=true,failover_priority=10"
+
 
 [postgres_cluster:children]
 master
