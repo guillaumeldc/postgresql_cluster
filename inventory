@@ -23,17 +23,17 @@
 # if dcs_exists: false and dcs_type: "consul"
 [consul_instances]                # 5 servers, odd ⇒ quorum survives 2 failures
 # ─── DC‑1 ─────────────────────────────────────────────
-10.64.48.95 consul_node_role=server postgresql_exists=true consul_bootstrap_expect=7 consul_datacenter=dc1
-10.64.48.96 consul_node_role=server postgresql_exists=true consul_bootstrap_expect=7 consul_datacenter=dc1
-10.64.48.97 consul_node_role=server postgresql_exists=true consul_bootstrap_expect=7 consul_datacenter=dc1
+10.64.48.95 consul_node_role=server postgresql_exists=false consul_bootstrap_expect=7 consul_datacenter=dc1
+10.64.48.96 consul_node_role=server postgresql_exists=false consul_bootstrap_expect=7 consul_datacenter=dc1
+10.64.48.97 consul_node_role=server postgresql_exists=false consul_bootstrap_expect=7 consul_datacenter=dc1
 
 # ─── DC‑2 (WAN segment) ──────────────────────────────
-10.8.162.100 consul_node_role=server postgresql_exists=true consul_bootstrap_expect=7 consul_datacenter=dc1
-10.8.162.101 consul_node_role=server postgresql_exists=true consul_bootstrap_expect=7 consul_datacenter=dc1
-10.8.162.102 consul_node_role=server postgresql_exists=true consul_bootstrap_expect=7 consul_datacenter=dc1
+10.8.162.100 consul_node_role=server postgresql_exists=false consul_bootstrap_expect=7 consul_datacenter=dc1
+10.8.162.101 consul_node_role=server postgresql_exists=false consul_bootstrap_expect=7 consul_datacenter=dc1
+10.8.162.102 consul_node_role=server postgresql_exists=false consul_bootstrap_expect=7 consul_datacenter=dc1
 
 # ─── DC‑3 (WAN segment) ──────────────────────────────
-10.29.29.201 consul_node_role=server postgresql_exists=true consul_bootstrap_expect=7 consul_datacenter=dc1
+10.29.29.201 consul_node_role=server postgresql_exists=false consul_bootstrap_expect=7 consul_datacenter=dc1
 
 
 # Optional clients / app hosts
@@ -50,17 +50,17 @@
 # PostgreSQL nodes
 [master]
 # ─── DC‑1 : primary + sync stand‑bys ──────────────────────────────
-10.64.48.95 hostname=DUKEPDPS41 postgresql_exists=true patroni_tags="datacenter=dc1,failover_priority=90"
+10.64.48.95 hostname=DUKEPDPS41 postgresql_exists=false patroni_tags="datacenter=dc1,failover_priority=90"
 [replica]
-10.64.48.96 hostname=DUKEPDPS42 postgresql_exists=true patroni_tags="datacenter=dc1,failover_priority=80"
-10.64.48.97 hostname=DUKEPDPS43 postgresql_exists=true patroni_tags="datacenter=dc1,failover_priority=70"
+10.64.48.96 hostname=DUKEPDPS42 postgresql_exists=false patroni_tags="datacenter=dc1,failover_priority=80"
+10.64.48.97 hostname=DUKEPDPS43 postgresql_exists=false patroni_tags="datacenter=dc1,failover_priority=70"
 
 # ─── DC‑2 : async replicas only (no WAN latency on commits) ───────
-10.8.162.100 hostname=DVTCPDPS28 postgresql_exists=true patroni_tags="datacenter=dc2,nosync=true,failover_priority=10"
-10.8.162.101 hostname=DVTCPDPS29 postgresql_exists=true patroni_tags="datacenter=dc2,nosync=true,failover_priority=10"
-10.8.162.102 hostname=DVTCPDPS30 postgresql_exists=true patroni_tags="datacenter=dc2,nosync=true,failover_priority=10"
+10.8.162.100 hostname=DVTCPDPS28 postgresql_exists=false patroni_tags="datacenter=dc2,nosync=true,failover_priority=10"
+10.8.162.101 hostname=DVTCPDPS29 postgresql_exists=false patroni_tags="datacenter=dc2,nosync=true,failover_priority=10"
+10.8.162.102 hostname=DVTCPDPS30 postgresql_exists=false patroni_tags="datacenter=dc2,nosync=true,failover_priority=10"
 # DC-3
-10.29.29.201 hostname=DVTCPDPS31 postgresql_exists=true patroni_tags="datacenter=dc3,nosync=true,failover_priority=10"
+10.29.29.201 hostname=DVTCPDPS31 postgresql_exists=false patroni_tags="datacenter=dc3,nosync=true,failover_priority=10"
 
 [postgres_cluster:children]
 master
