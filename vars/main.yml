@@ -12,7 +12,7 @@ vip_interface: "{{ ansible_default_ipv4.interface }}"  # interface name (e.g., "
 # Note: VIP-based solutions such as keepalived or vip-manager may not function correctly in cloud environments like AWS.
 
 patroni_cluster_name: "postgres-cluster"  # the cluster name (must be unique for each cluster)
-patroni_install_version: "3.3.2"  # or 'latest'
+patroni_install_version: "latest"  # or 'latest'
 
 patroni_superuser_username: "postgres"
 patroni_superuser_password: "HHKJ823JLLdkkk34klJJ"  # Please specify a password. If not defined, will be generated automatically during deployment.
@@ -84,7 +84,7 @@ keepalived_virtual_router_id: "{{ cluster_vip.split('.')[3] | int }}" # The last
 # virtual_router_id - must be unique in the network (available values are 0..255).
 
 # vip-manager (if 'cluster_vip' is specified and 'with_haproxy_load_balancing' is 'false')
-vip_manager_version: "2.6.0"  # version to install
+vip_manager_version: "latest"  # version to install
 vip_manager_conf: "/etc/patroni/vip-manager.yml"
 vip_manager_interval: "1000"  # time (in milliseconds) after which vip-manager wakes up and checks if it needs to register or release ip addresses.
 vip_manager_iface: "{{ vip_interface }}"  # interface to which the virtual ip will be added
@@ -107,7 +107,7 @@ patroni_etcd_hosts: []  # list of servers of an existing etcd cluster
 #  - { host: "10.128.64.142", port: "2379" }
 #  - { host: "10.128.64.143", port: "2379" }
 patroni_etcd_namespace: "service"  # (optional) etcd namespace (prefix)
-patroni_etcd_username: elduco" # (optional) username for etcd authentication
+patroni_etcd_username: "elduco" # (optional) username for etcd authentication
 patroni_etcd_password: "HHKJ823JLLdkkk34klJJ" # (optional) password for etcd authentication
 patroni_etcd_protocol: "https" # (optional) http or https, if not specified http is used
 
@@ -116,7 +116,7 @@ patroni_etcd_protocol: "https" # (optional) http or https, if not specified http
 # https://patroni.readthedocs.io/en/latest/yaml_configuration.html#consul
 
 # if dcs_type: "consul"
-consul_version: "1.19.2"
+consul_version: "latest"
 consul_config_path: "/etc/consul"
 consul_configd_path: "{{ consul_config_path }}/conf.d"
 consul_data_path: "/var/lib/consul"
