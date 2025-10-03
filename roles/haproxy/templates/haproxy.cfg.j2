@@ -109,6 +109,7 @@ listen master
     bind {{ cluster_vip }}:{{ haproxy_listen_port.master }}
 {% else %}
     bind {{ inventory_hostname }}:{{ haproxy_listen_port.master }}
+    bind 127.0.0.1:{{ haproxy_listen_port.master }}
 {% endif %}
     maxconn {{ haproxy_maxconn.master }}
     {{ common_checks() }}
@@ -128,6 +129,7 @@ listen master_direct
     bind {{ cluster_vip }}:{{ haproxy_listen_port.master_direct }}
 {% else %}
     bind {{ inventory_hostname }}:{{ haproxy_listen_port.master_direct }}
+    bind 127.0.0.1:{{ haproxy_listen_port.master_direct }}
 {% endif %}
     maxconn {{ haproxy_maxconn.master }}
     {{ common_checks(postgresql_port) }}
@@ -147,6 +149,7 @@ listen replicas
     bind {{ cluster_vip }}:{{ haproxy_listen_port.replicas }}
 {% else %}
     bind {{ inventory_hostname }}:{{ haproxy_listen_port.replicas }}
+    bind 127.0.0.1:{{ haproxy_listen_port.replicas }}
 {% endif %}
     maxconn {{ haproxy_maxconn.replica }}
     {{ common_checks() }}
@@ -186,11 +189,13 @@ listen replicas_sync
     bind {{ cluster_vip }}:{{ haproxy_listen_port.replicas_sync }}
 {% else %}
     bind {{ inventory_hostname }}:{{ haproxy_listen_port.replicas_sync }}
+    bind 127.0.0.1:{{ haproxy_listen_port.replicas_sync }}
 {% endif %}
     maxconn {{ haproxy_maxconn.replica }}
     {{ common_checks() }}
     {% set qs_sync = extra_qs_str %}
     option httpchk OPTIONS /sync{% if qs_sync %}?{{ qs_sync }}{% endif %}
+
     http-check expect status 200
 {% for h in local_hosts %}
     {{ server_line(h, false) }}
@@ -206,10 +211,12 @@ listen replicas_sync_direct
     bind {{ cluster_vip }}:{{ haproxy_listen_port.replicas_sync_direct }}
 {% else %}
     bind {{ inventory_hostname }}:{{ haproxy_listen_port.replicas_sync_direct }}
+    bind 127.0.0.1:{{ haproxy_listen_port.replicas_sync_direct }}
 {% endif %}
     maxconn {{ haproxy_maxconn.replica }}
     {{ common_checks(postgresql_port) }}
     option httpchk OPTIONS /sync{% if qs_sync %}?{{ qs_sync }}{% endif %}
+    
     http-check expect status 200
 {% for h in local_hosts %}
     {{ server_line(h, false, postgresql_port) }}
@@ -225,6 +232,7 @@ listen replicas_async
     bind {{ cluster_vip }}:{{ haproxy_listen_port.replicas_async }}
 {% else %}
     bind {{ inventory_hostname }}:{{ haproxy_listen_port.replicas_async }}
+    bind 127.0.0.1:{{ haproxy_listen_port.replicas_async }}
 {% endif %}
     maxconn {{ haproxy_maxconn.replica }}
     {{ common_checks() }}
@@ -245,6 +253,7 @@ listen replicas_async_direct
     bind {{ cluster_vip }}:{{ haproxy_listen_port.replicas_async_direct }}
 {% else %}
     bind {{ inventory_hostname }}:{{ haproxy_listen_port.replicas_async_direct }}
+    bind 127.0.0.1:{{ haproxy_listen_port.replicas_async_direct }}
 {% endif %}
     maxconn {{ haproxy_maxconn.replica }}
     {{ common_checks(postgresql_port) }}
