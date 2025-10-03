@@ -36,18 +36,6 @@
 {% endif %}
 {% set extra_qs_str = extra_qs|join('&') %}
 
-{# split postgres_cluster nodes into locals vs remotes #}
-{% set local_hosts = [] %}
-{% set remote_hosts = [] %}
-{% for h in groups['postgres_cluster'] %}
-  {% set hdc = tag_value(hostvars[h].patroni_tags | default(''), 'datacenter') %}
-  {% if hdc == local_dc %}
-    {% set _ = local_hosts.append(h) %}
-  {% else %}
-    {% set _ = remote_hosts.append(h) %}
-  {% endif %}
-{% endfor %}
-
 {# tiny helpers #}
 {% macro server_line(host, backup=false, port=backend_port) -%}
 server {{ hostvars[host].ansible_hostname }} {{ hostvars[host].inventory_hostname }}:{{ port }} check port {{ patroni_restapi_port }}{% if backup %} backup{% endif %}
