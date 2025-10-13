@@ -6,27 +6,31 @@
         path: /etc/apt/keyrings
         state: directory
         mode: '0755'
-    - name: Add PGDG repository (deb822)
-      ansible.builtin.deb822_repository:
-        name: pgdg
-        types: [deb]
-        uris: https://apt.postgresql.org/pub/repos/apt
-        suites: "{{ ansible_distribution_release }}-pgdg"
-        components: [main]
-        signed_by: /etc/apt/keyrings/pgdg.gpg
-        state: present
-        enabled: true
-    - apt: { update_cache: yes }
 
-    - name: Dearmor shipped key
-      ansible.builtin.command:
-        cmd: gpg --dearmor -o /etc/apt/keyrings/pgdg.gpg /etc/apt/keyrings/pgdg.asc
+    - name: Ensure tools for fetching/dearmoring are present
+      ansible.builtin.apt:
+        name:
+          - curl
+          - gpg
+          - ca-certificates
+        state: present
+        update_cache: yes
+
+    # --- PGDG key as keyring ---
+    - name: Fetch & dearmor PGDG key (workaround apt_key/requests bug)
+      ansible.builtin.shell: |
+        set -euo pipefail
+        curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc | gpg --dearmor -o /etc/apt/keyrings/pgdg.gpg
+        chmod 0644 /etc/apt/keyrings/pgdg.gpg
       args:
         creates: /etc/apt/keyrings/pgdg.gpg
-      when: not curl_fetch|default(true)
 
-    - name: apt update
-      ansible.builtin.apt:
+    # --- PGDG repo using signed-by ---
+    - name: Add PGDG apt repository (with signed-by)
+      ansible.builtin.apt_repository:
+        repo: "deb [signed-by=/etc/apt/keyrings/pgdg.gpg] https://apt.postgresql.org/pub/repos/apt {{ ansible_distribution_release }}-pgdg main"
+        filename: "pgdg"
+        state: present
         update_cache: yes
   environment: "{{ proxy_env | default({}) }}"
   when: installation_method == "repo" and ansible_os_family == "Debian"
