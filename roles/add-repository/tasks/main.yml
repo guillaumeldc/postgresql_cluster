@@ -1,20 +1,33 @@
 ---
 
 - block:  # Debian/Ubuntu
-    - name: Add repository apt-key
-      ansible.builtin.apt_key:
-        url: "{{ item.key }}"
+    - name: Ensure keyrings dir exists
+      ansible.builtin.file:
+        path: /etc/apt/keyrings
+        state: directory
+        mode: '0755'
+    - name: Add PGDG repository (deb822)
+      ansible.builtin.deb822_repository:
+        name: pgdg
+        types: [deb]
+        uris: https://apt.postgresql.org/pub/repos/apt
+        suites: "{{ ansible_distribution_release }}-pgdg"
+        components: [main]
+        signed_by: /etc/apt/keyrings/pgdg.gpg
         state: present
-      loop: "{{ apt_repository_keys }}"
-      when: apt_repository_keys | length > 0
+        enabled: true
+    - apt: { update_cache: yes }
 
-    - name: Add repository
-      ansible.builtin.apt_repository:
-        repo: "{{ item.repo }}"
-        state: present
-        update_cache: true
-      loop: "{{ apt_repository }}"
-      when: apt_repository | length > 0
+    - name: Dearmor shipped key
+      ansible.builtin.command:
+        cmd: gpg --dearmor -o /etc/apt/keyrings/pgdg.gpg /etc/apt/keyrings/pgdg.asc
+      args:
+        creates: /etc/apt/keyrings/pgdg.gpg
+      when: not curl_fetch|default(true)
+
+    - name: apt update
+      ansible.builtin.apt:
+        update_cache: yes
   environment: "{{ proxy_env | default({}) }}"
   when: installation_method == "repo" and ansible_os_family == "Debian"
   tags: add_repo
