@@ -1,0 +1,254 @@
+# -------------------------------------------------------------------
+# HAProxy for Patroni/PGbouncer with local-DC preference + cross-DC backup
+# Parses DC from existing inventory variables:
+#   - balancers:       balancer_tags="datacenter=dcX[, ...]"
+#   - postgres nodes:  patroni_tags="datacenter=dcX[, ...]"
+# -------------------------------------------------------------------
+
+{# local DC from this HAProxy (balancer) host #}
+{% set local_dc = hostvars[inventory_hostname].datacenter %}
+{% set local_hosts  = [] %}
+{% set remote_hosts = [] %}
+{% for h in groups['postgres_cluster'] %}
+  {% if hostvars[h].datacenter == local_dc %}
+    {% set _ = local_hosts.append(h) %}
+  {% else %}
+    {% set _ = remote_hosts.append(h) %}
+  {% endif %}
+{% endfor %}
+
+{# debug #}
+# local_dc = {{ local_dc | default('') }}
+
+{# do we have PgBouncer? #}
+{% set use_pgbouncer = pgbouncer_install|default(false)|bool %}
+{% set backend_port = (pgbouncer_listen_port if use_pgbouncer else postgresql_port) %}
+
+{# build extra httpchk tags but strip any datacenter=... (since we mix DCs) #}
+{% set extra_qs = [] %}
+{% if balancer_tags is defined and (balancer_tags|string)|length > 0 %}
+  {% for t in (balancer_tags|string).split(',') %}
+    {% set t = t|trim %}
+    {% if t and 'datacenter=' not in t and '=' in t %}
+      {% set _ = extra_qs.append('tag_' ~ (t.split('=')[0]|trim) ~ '=' ~ (t.split('=')[1]|trim)) %}
+    {% endif %}
+  {% endfor %}
+{% endif %}
+{% set extra_qs_str = extra_qs|join('&') %}
+
+{# tiny helpers #}
+{% macro server_line(host, backup=false, port=backend_port) -%}
+server {{ hostvars[host].ansible_hostname }} {{ hostvars[host].inventory_hostname }}:{{ port }} check port {{ patroni_restapi_port }}{% if backup %} backup{% endif %}
+{%- endmacro %}
+
+{% macro common_checks(port=backend_port) -%}
+    option tcp-check
+    tcp-check connect port {{ port }}
+    default-server inter 2s fastinter 1s fall 2 rise 2 on-marked-down shutdown-sessions
+{%- endmacro %}
+
+global
+    maxconn {{ haproxy_maxconn.global }}
+    log /dev/log local0
+    log /dev/log local1 notice
+    chroot /var/lib/haproxy
+    stats socket /run/haproxy/admin.sock mode 660 level admin expose-fd listeners
+    stats timeout 30s
+    user haproxy
+    group haproxy
+    daemon
+
+defaults
+    mode               tcp
+    log                global
+    option             tcplog
+{% if haproxy_log_format is defined %}
+    log-format         '{{ haproxy_log_format }}'
+{% endif %}
+    retries            1                 # fast failover (avoid ~10s hangs)
+    timeout queue      2s
+    timeout connect    2000ms
+    timeout client     {{ haproxy_timeout.client }}
+    timeout server     {{ haproxy_timeout.server }}
+    timeout check      5s
+    balance            leastconn
+    option             redispatch
+
+# -------- stats --------
+listen stats
+    mode http
+    bind {{ inventory_hostname }}:{{ haproxy_listen_port.stats }}
+    stats enable
+    stats uri /
+
+# -------- MASTER (primary) --------
+listen master
+{% if cluster_vip is defined and cluster_vip | length > 0 %}
+    bind {{ cluster_vip }}:{{ haproxy_listen_port.master }}
+    bind 127.0.0.1:{{ haproxy_listen_port.master }}
+{% else %}
+    bind {{ inventory_hostname }}:{{ haproxy_listen_port.master }}
+    bind 127.0.0.1:{{ haproxy_listen_port.master }}
+{% endif %}
+    maxconn {{ haproxy_maxconn.master }}
+    {{ common_checks() }}
+    option httpchk OPTIONS /primary
+    http-check expect status 200
+{% for h in local_hosts %}
+    {{ server_line(h, false) }}
+{% endfor %}
+{% for h in remote_hosts %}
+    {{ server_line(h, true) }}
+{% endfor %}
+
+{% if use_pgbouncer and haproxy_listen_port.master_direct is defined %}
+# direct-to-Postgres primary (bypass PgBouncer)
+listen master_direct
+{% if cluster_vip is defined and cluster_vip | length > 0 %}
+    bind {{ cluster_vip }}:{{ haproxy_listen_port.master_direct }}
+    bind 127.0.0.1:{{ haproxy_listen_port.master_direct }}
+{% else %}
+    bind {{ inventory_hostname }}:{{ haproxy_listen_port.master_direct }}
+    bind 127.0.0.1:{{ haproxy_listen_port.master_direct }}
+{% endif %}
+    maxconn {{ haproxy_maxconn.master }}
+    {{ common_checks(postgresql_port) }}
+    option httpchk OPTIONS /primary
+    http-check expect status 200
+{% for h in local_hosts %}
+    {{ server_line(h, false, postgresql_port) }}
+{% endfor %}
+{% for h in remote_hosts %}
+    {{ server_line(h, true, postgresql_port) }}
+{% endfor %}
+{% endif %}
+
+# -------- REPLICAS (lag-gated) --------
+listen replicas
+{% if cluster_vip is defined and cluster_vip | length > 0 %}
+    bind {{ cluster_vip }}:{{ haproxy_listen_port.replicas }}
+    bind 127.0.0.1:{{ haproxy_listen_port.replicas }}
+{% else %}
+    bind {{ inventory_hostname }}:{{ haproxy_listen_port.replicas }}
+    bind 127.0.0.1:{{ haproxy_listen_port.replicas }}
+{% endif %}
+    maxconn {{ haproxy_maxconn.replica }}
+    {{ common_checks() }}
+    {% set qs = 'lag=' ~ patroni_maximum_lag_on_replica ~ ( ('&' ~ extra_qs_str) if extra_qs_str ) %}
+    option httpchk OPTIONS /replica?{{ qs }}
+    http-check expect status 200
+{% for h in local_hosts %}
+    {{ server_line(h, false) }}
+{% endfor %}
+{% for h in remote_hosts %}
+    {{ server_line(h, true) }}
+{% endfor %}
+
+{% if use_pgbouncer and haproxy_listen_port.replicas_direct is defined %}
+# direct-to-Postgres replicas
+listen replicas_direct
+{% if cluster_vip is defined and cluster_vip | length > 0 %}
+    bind {{ cluster_vip }}:{{ haproxy_listen_port.replicas_direct }}
+    bind 127.0.0.1:{{ haproxy_listen_port.replicas_direct }}
+{% else %}
+    bind {{ inventory_hostname }}:{{ haproxy_listen_port.replicas_direct }}
+    bind 127.0.0.1:{{ haproxy_listen_port.replicas_direct }}
+{% endif %}
+    maxconn {{ haproxy_maxconn.replica }}
+    {{ common_checks(postgresql_port) }}
+    option httpchk OPTIONS /replica?{{ qs }}
+    http-check expect status 200
+{% for h in local_hosts %}
+    {{ server_line(h, false, postgresql_port) }}
+{% endfor %}
+{% for h in remote_hosts %}
+    {{ server_line(h, true, postgresql_port) }}
+{% endfor %}
+{% endif %}
+
+# -------- SYNC replicas --------
+listen replicas_sync
+{% if cluster_vip is defined and cluster_vip | length > 0 %}
+    bind {{ cluster_vip }}:{{ haproxy_listen_port.replicas_sync }}
+    bind 127.0.0.1:{{ haproxy_listen_port.replicas_sync }}
+{% else %}
+    bind {{ inventory_hostname }}:{{ haproxy_listen_port.replicas_sync }}
+    bind 127.0.0.1:{{ haproxy_listen_port.replicas_sync }}
+{% endif %}
+    maxconn {{ haproxy_maxconn.replica }}
+    {{ common_checks() }}
+    {% set qs_sync = extra_qs_str %}
+    option httpchk OPTIONS /sync{% if qs_sync %}?{{ qs_sync }}{% endif %}
+    
+    http-check expect status 200
+{% for h in local_hosts %}
+    {{ server_line(h, false) }}
+{% endfor %}
+{% for h in remote_hosts %}
+    {{ server_line(h, true) }}
+{% endfor %}
+
+{% if use_pgbouncer and haproxy_listen_port.replicas_sync_direct is defined %}
+# direct-to-Postgres sync replicas
+listen replicas_sync_direct
+{% if cluster_vip is defined and cluster_vip | length > 0 %}
+    bind {{ cluster_vip }}:{{ haproxy_listen_port.replicas_sync_direct }}
+    bind 127.0.0.1:{{ haproxy_listen_port.replicas_sync_direct }}
+{% else %}
+    bind {{ inventory_hostname }}:{{ haproxy_listen_port.replicas_sync_direct }}
+    bind 127.0.0.1:{{ haproxy_listen_port.replicas_sync_direct }}
+{% endif %}
+    maxconn {{ haproxy_maxconn.replica }}
+    {{ common_checks(postgresql_port) }}
+    option httpchk OPTIONS /sync{% if qs_sync %}?{{ qs_sync }}{% endif %}
+    http-check expect status 200
+{% for h in local_hosts %}
+    {{ server_line(h, false, postgresql_port) }}
+{% endfor %}
+{% for h in remote_hosts %}
+    {{ server_line(h, true, postgresql_port) }}
+{% endfor %}
+{% endif %}
+
+# -------- ASYNC replicas (allow lag) --------
+listen replicas_async
+{% if cluster_vip is defined and cluster_vip | length > 0 %}
+    bind {{ cluster_vip }}:{{ haproxy_listen_port.replicas_async }}
+    bind 127.0.0.1:{{ haproxy_listen_port.replicas_async }}
+{% else %}
+    bind {{ inventory_hostname }}:{{ haproxy_listen_port.replicas_async }}
+    bind 127.0.0.1:{{ haproxy_listen_port.replicas_async }}
+{% endif %}
+    maxconn {{ haproxy_maxconn.replica }}
+    {{ common_checks() }}
+    {% set qs_async = 'lag=' ~ patroni_maximum_lag_on_replica ~ ( ('&' ~ extra_qs_str) if extra_qs_str ) %}
+    option httpchk OPTIONS /async?{{ qs_async }}
+    http-check expect status 200
+{% for h in local_hosts %}
+    {{ server_line(h, false) }}
+{% endfor %}
+{% for h in remote_hosts %}
+    {{ server_line(h, true) }}
+{% endfor %}
+
+{% if use_pgbouncer and haproxy_listen_port.replicas_async_direct is defined %}
+# direct-to-Postgres async replicas
+listen replicas_async_direct
+{% if cluster_vip is defined and cluster_vip | length > 0 %}
+    bind {{ cluster_vip }}:{{ haproxy_listen_port.replicas_async_direct }}
+    bind 127.0.0.1:{{ haproxy_listen_port.replicas_async_direct }}
+{% else %}
+    bind {{ inventory_hostname }}:{{ haproxy_listen_port.replicas_async_direct }}
+    bind 127.0.0.1:{{ haproxy_listen_port.replicas_async_direct }}
+{% endif %}
+    maxconn {{ haproxy_maxconn.replica }}
+    {{ common_checks(postgresql_port) }}
+    option httpchk OPTIONS /async?{{ qs_async }}
+    http-check expect status 200
+{% for h in local_hosts %}
+    {{ server_line(h, false, postgresql_port) }}
+{% endfor %}
+{% for h in remote_hosts %}
+    {{ server_line(h, true, postgresql_port) }}
+{% endfor %}
+{% endif %}
