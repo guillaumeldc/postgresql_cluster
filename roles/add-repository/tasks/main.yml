@@ -7,32 +7,21 @@
         state: directory
         mode: '0755'
 
-    - name: Ensure tools for fetching/dearmoring are present
+    - name: Ensure curl/gpg/ca-certs are present
       ansible.builtin.apt:
-        name:
-          - curl
-          - gpg
-          - ca-certificates
+        name: [curl, gpg, ca-certificates]
         state: present
         update_cache: yes
 
-    # --- PGDG key as keyring ---
-    - name: Fetch & dearmor PGDG key (workaround apt_key/requests bug)
+    - name: Fetch & dearmor PGDG key (bash)
       ansible.builtin.shell: |
-        set -euo pipefail
-        curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc | gpg --dearmor -o /etc/apt/keyrings/pgdg.gpg
+        curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc -o /etc/apt/keyrings/pgdg.asc
+        gpg --dearmor -o /etc/apt/keyrings/pgdg.gpg /etc/apt/keyrings/pgdg.asc
         chmod 0644 /etc/apt/keyrings/pgdg.gpg
       args:
+        executable: /bin/bash         # <-- force bash
         creates: /etc/apt/keyrings/pgdg.gpg
-
-    # --- PGDG repo using signed-by ---
-    - name: Add PGDG apt repository (with signed-by)
-      ansible.builtin.apt_repository:
-        repo: "deb [signed-by=/etc/apt/keyrings/pgdg.gpg] https://apt.postgresql.org/pub/repos/apt {{ ansible_distribution_release }}-pgdg main"
-        filename: "pgdg"
-        state: present
-        update_cache: yes
-  environment: "{{ proxy_env | default({}) }}"
+      environment: "{{ proxy_env | default({}) }}"
   when: installation_method == "repo" and ansible_os_family == "Debian"
   tags: add_repo
 
