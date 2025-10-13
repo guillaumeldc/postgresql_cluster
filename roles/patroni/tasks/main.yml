@@ -20,18 +20,34 @@
         dest: /tmp/requirements.txt
       when: patroni_pip_requirements_repo | length < 1
 
-    - name: Install setuptools
-      ansible.builtin.pip:
-        # name: setuptools<66.0.0  # https://github.com/pypa/setuptools/issues/3772
-        name: setuptools
-        state: latest
-        executable: pip3
-        extra_args: "--trusted-host=pypi.python.org --trusted-host=pypi.org --trusted-host=files.pythonhosted.org"
-        umask: "0022"
+    # Fix for Python 3.12 / Ubuntu 24.04 setuptools compatibility issue
+    - name: Check if broken setuptools exists
+      ansible.builtin.stat:
+        path: /usr/local/lib/python3.12/dist-packages/pkg_resources
+      register: broken_setuptools
+
+    - name: Backup and remove broken setuptools (Python 3.12 compatibility)
+      ansible.builtin.shell: |
+        mkdir -p /root/bad-py-backup
+        for d in pkg_resources setuptools easy_install.py; do
+          if [ -e /usr/local/lib/python3.12/dist-packages/$d ]; then
+            mv /usr/local/lib/python3.12/dist-packages/$d /root/bad-py-backup/
+          fi
+          if [ -e /usr/local/lib/python3/dist-packages/$d ]; then
+            mv /usr/local/lib/python3/dist-packages/$d /root/bad-py-backup/
+          fi
+        done
+      when: broken_setuptools.stat.exists
+      changed_when: true
+
+    - name: Reinstall setuptools using command (bypass pip module)
+      ansible.builtin.command: >
+        python3 -m pip install --upgrade --force-reinstall --ignore-installed setuptools
       environment:
-        PATH: "{{ ansible_env.PATH }}:/usr/local/bin:/usr/bin"
         PIP_BREAK_SYSTEM_PACKAGES: "1"
-      when: patroni_pip_requirements_repo | length < 1
+        PATH: "{{ ansible_env.PATH }}:/usr/local/bin:/usr/bin"
+      when: broken_setuptools.stat.exists
+      changed_when: true
 
     - name: Install requirements
       ansible.builtin.pip:
