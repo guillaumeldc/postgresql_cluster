@@ -1,16 +1,15 @@
-urllib3>=1.25.9
-boto3
-PyYAML
-requests>=2.25.1
-six>=1.7
-ydiff>=1.2.0
-pexpect==4.9.0
-ruamel.yaml==0.17.40
-ruamel.yaml.clib==0.2.8
-python-etcd3>=0.12.0
+# DCS backends
+etcd3>=0.12.0
 python-consul2>=0.1.5
+
+# Core Patroni dependencies
 click>=8.0.0
 prettytable>=3.0.0
 python-dateutil>=2.8.0
 pysyncobj>=0.3.12
 psutil>=5.9.0
+ydiff>=1.2.0
+
+# Ansible helper libraries (if needed for PITR tasks)
+pexpect>=4.9.0
+ruamel.yaml>=0.18.0
