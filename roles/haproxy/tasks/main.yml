@@ -397,6 +397,11 @@
         (postgresql_cluster_maintenance is not defined or not postgresql_cluster_maintenance|bool)
   tags: haproxy, haproxy_conf, load_balancing
 
+- name: Remove HAProxy override that pulls in $EXTRAOPTS (if exists)
+  ansible.builtin.file:
+    path: /etc/systemd/system/haproxy.service.d/override.conf
+    state: absent
+
 - name: Generate systemd service file "/etc/systemd/system/haproxy.service"
   ansible.builtin.template:
     src: templates/haproxy.service.j2
