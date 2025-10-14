@@ -360,6 +360,12 @@ postgresql_pg_hba:
   - { type: "local", database: "all", user: "all", address: "", method: "{{ postgresql_password_encryption_algorithm }}" }
   - { type: "host", database: "all", user: "all", address: "127.0.0.1/32", method: "{{ postgresql_password_encryption_algorithm }}" }
   - { type: "host", database: "all", user: "all", address: "::1/128", method: "{{ postgresql_password_encryption_algorithm }}" }
+  # DC2 network for standby cluster
+  - { type: "host", database: "replication", user: "{{ patroni_replication_username }}", address: "10.8.162.0/24", method: "{{ postgresql_password_encryption_algorithm }}" }
+  - { type: "host", database: "all", user: "all", address: "10.8.162.0/24", method: "{{ postgresql_password_encryption_algorithm }}" }
+  # DC3 network (when you add it later)
+  - { type: "host", database: "replication", user: "{{ patroni_replication_username }}", address: "10.29.29.0/24", method: "{{ postgresql_password_encryption_algorithm }}" }
+  - { type: "host", database: "all", user: "all", address: "10.29.29.0/24", method: "{{ postgresql_password_encryption_algorithm }}" }
 #  - { type: "host", database: "mydatabase", user: "mydb-user", address: "192.168.0.0/24", method: "{{ postgresql_password_encryption_algorithm }}" }
 #  - { type: "host", database: "all", user: "all", address: "192.168.0.0/24", method: "ident", options: "map=main" }  # use pg_ident
 
