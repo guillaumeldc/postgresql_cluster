@@ -11,7 +11,7 @@ cluster_vip: ""  # IP address for client access to the databases in the cluster 
 vip_interface: "{{ ansible_default_ipv4.interface }}"  # interface name (e.g., "ens32").
 # Note: VIP-based solutions such as keepalived or vip-manager may not function correctly in cloud environments like AWS.
 
-patroni_cluster_name: "postgres-cluster-dc1"  # the cluster name (must be unique for each cluster)
+patroni_cluster_name: "postgres-cluster-dc2"  # the cluster name (must be unique for each cluster)
 patroni_install_version: "latest"  # or 'latest'
 
 patroni_superuser_username: "postgres"
@@ -170,7 +170,10 @@ consul_acl_replication_enable: true
 
 # OTHER
 
-consul_join: []  # List of LAN servers of an existing consul cluster, to join.
+consul_join:  # List of LAN servers of an existing consul cluster, to join.
+  - "10.64.48.95"
+  - "10.64.48.96"
+  - "10.64.48.97"
 # - "10.128.64.140"
 # - "10.128.64.142"
 # - "10.128.64.143"
@@ -436,9 +439,11 @@ patroni_callbacks: []
 # 1. the cluster name for Standby Cluster must be unique ('patroni_cluster_name' variable)
 # 2. the IP addresses (or network) of the Standby Cluster servers must be added to the pg_hba.conf of the Main Cluster ('postgresql_pg_hba' variable).
 patroni_standby_cluster:
-  host: ""  # an address of remote master
+  host: "master.postgres-cluster-dc1.service.dc1.consul"  # an address of remote master
   port: "5432"  # a port of remote master
-#  primary_slot_name: ""  # which slot on the remote master to use for replication (optional)
+  primary_slot_name: "standby_dc2"  # which slot on the remote master to use for replication (optional)
+  create_replica_methods:
+    - basebackup
 #  restore_command: ""  # command to restore WAL records from the remote master to standby leader (optional)
 #  recovery_min_apply_delay: ""  # how long to wait before actually apply WAL records on a standby leader (optional)
 
