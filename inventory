@@ -55,12 +55,12 @@
 10.64.48.96 hostname=DUKEPDPS42 postgresql_exists=true patroni_tags="datacenter=dc1,failover_priority=80" datacenter=dc1
 10.64.48.97 hostname=DUKEPDPS43 postgresql_exists=true patroni_tags="datacenter=dc1,failover_priority=70" datacenter=dc1
 
-# ─── DC‑2 : async replicas only (no WAN latency on commits) ───────
-10.8.162.100 hostname=DVTCPDPS28 postgresql_exists=true patroni_tags="datacenter=dc2,nosync=true,failover_priority=10" datacenter=dc2
-10.8.162.101 hostname=DVTCPDPS29 postgresql_exists=true patroni_tags="datacenter=dc2,nosync=true,failover_priority=10" datacenter=dc2
-10.8.162.102 hostname=DVTCPDPS30 postgresql_exists=true patroni_tags="datacenter=dc2,nosync=true,failover_priority=10" datacenter=dc2
-# DC-3
-10.29.29.201 hostname=DVTCPDPS31 postgresql_exists=true patroni_tags="datacenter=dc3,nosync=true,failover_priority=10" datacenter=dc3
+; # ─── DC‑2 : async replicas only (no WAN latency on commits) ───────
+; 10.8.162.100 hostname=DVTCPDPS28 postgresql_exists=true patroni_tags="datacenter=dc2,nosync=true,failover_priority=10" datacenter=dc2
+; 10.8.162.101 hostname=DVTCPDPS29 postgresql_exists=true patroni_tags="datacenter=dc2,nosync=true,failover_priority=10" datacenter=dc2
+; 10.8.162.102 hostname=DVTCPDPS30 postgresql_exists=true patroni_tags="datacenter=dc2,nosync=true,failover_priority=10" datacenter=dc2
+; # DC-3
+; 10.29.29.201 hostname=DVTCPDPS31 postgresql_exists=true patroni_tags="datacenter=dc3,nosync=true,failover_priority=10" datacenter=dc3
 
 [postgres_cluster:children]
 master
