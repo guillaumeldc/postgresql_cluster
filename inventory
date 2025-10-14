@@ -54,12 +54,12 @@
 # ─── DC‑2 : leader ──────────────────────────────
 10.8.162.100 hostname=DVTCPDPS28 postgresql_exists=true patroni_tags="datacenter=dc2,failover_priority=90"
 [replica]
-; 10.64.48.96 hostname=DUKEPDPS42 postgresql_exists=false patroni_tags="datacenter=dc1,failover_priority=80"
-; 10.64.48.97 hostname=DUKEPDPS43 postgresql_exists=false patroni_tags="datacenter=dc1,failover_priority=70"
+; 10.64.48.96 hostname=DUKEPDPS42 postgresql_exists=true patroni_tags="datacenter=dc1,failover_priority=80"
+; 10.64.48.97 hostname=DUKEPDPS43 postgresql_exists=true patroni_tags="datacenter=dc1,failover_priority=70"
 
 ; # ─── DC‑2 : async replicas only (no WAN latency on commits) ───────
-10.8.162.101 hostname=DVTCPDPS29 postgresql_exists=false patroni_tags="datacenter=dc2,failover_priority=80"
-10.8.162.102 hostname=DVTCPDPS30 postgresql_exists=false patroni_tags="datacenter=dc2,failover_priority=70"
+10.8.162.101 hostname=DVTCPDPS29 postgresql_exists=true patroni_tags="datacenter=dc2,failover_priority=80"
+10.8.162.102 hostname=DVTCPDPS30 postgresql_exists=true patroni_tags="datacenter=dc2,failover_priority=70"
 ; # DC-3
 ; 10.29.29.201 hostname=DVTCPDPS31 postgresql_exists=true patroni_tags="datacenter=dc3,nosync=true,failover_priority=10" datacenter=dc3
 
