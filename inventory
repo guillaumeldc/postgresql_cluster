@@ -28,9 +28,9 @@
 ; 10.64.48.97 consul_node_role=server consul_bootstrap_expect=true consul_datacenter=dc1
 
 ; # ─── DC‑2 (WAN segment) ──────────────────────────────
-10.8.162.100 consul_node_role=server consul_bootstrap_expect=true consul_datacenter=dc2
-10.8.162.101 consul_node_role=server consul_bootstrap_expect=true consul_datacenter=dc2
-10.8.162.102 consul_node_role=server consul_bootstrap_expect=true consul_datacenter=dc2
+10.8.162.100 consul_node_role=server consul_bootstrap_expect=3 consul_datacenter=dc2
+10.8.162.101 consul_node_role=server consul_bootstrap_expect=3 consul_datacenter=dc2
+10.8.162.102 consul_node_role=server consul_bootstrap_expect=3 consul_datacenter=dc2
 
 ; # ─── DC‑3 (WAN segment) ──────────────────────────────
 ; 10.29.29.201 consul_node_role=server consul_bootstrap_expect=7 consul_datacenter=dc3
