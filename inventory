@@ -42,9 +42,9 @@
 ; 10.64.48.95 balancer_tags="datacenter=dc1"
 ; 10.64.48.96 balancer_tags="datacenter=dc1"
 ; 10.64.48.97 balancer_tags="datacenter=dc1"
-; 10.8.162.100 balancer_tags="datacenter=dc2" datacenter=dc2
-; 10.8.162.101 balancer_tags="datacenter=dc2" datacenter=dc2
-; 10.8.162.102 balancer_tags="datacenter=dc2" datacenter=dc2
+10.8.162.100 balancer_tags="datacenter=dc2"
+10.8.162.101 balancer_tags="datacenter=dc2"
+10.8.162.102 balancer_tags="datacenter=dc2"
 ; 10.29.29.201 balancer_tags="datacenter=dc3" datacenter=dc3
 
 # PostgreSQL nodes
