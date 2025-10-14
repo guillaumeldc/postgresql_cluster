@@ -50,10 +50,10 @@
 # PostgreSQL nodes
 [master]
 # ─── DC‑1 : primary + sync stand‑bys ──────────────────────────────
-10.64.48.95 hostname=DUKEPDPS41 postgresql_exists=true patroni_tags="datacenter=dc1,failover_priority=90"
+10.64.48.95 hostname=DUKEPDPS41 postgresql_exists=false patroni_tags="datacenter=dc1,failover_priority=90"
 [replica]
-10.64.48.96 hostname=DUKEPDPS42 postgresql_exists=true patroni_tags="datacenter=dc1,failover_priority=80"
-10.64.48.97 hostname=DUKEPDPS43 postgresql_exists=true patroni_tags="datacenter=dc1,failover_priority=70"
+10.64.48.96 hostname=DUKEPDPS42 postgresql_exists=false patroni_tags="datacenter=dc1,failover_priority=80"
+10.64.48.97 hostname=DUKEPDPS43 postgresql_exists=false patroni_tags="datacenter=dc1,failover_priority=70"
 
 ; # ─── DC‑2 : async replicas only (no WAN latency on commits) ───────
 ; 10.8.162.100 hostname=DVTCPDPS28 postgresql_exists=true patroni_tags="datacenter=dc2,nosync=true,failover_priority=10" datacenter=dc2
