@@ -137,9 +137,9 @@ consul_recursors: # List of upstream DNS servers
 consul_dnsmasq_enable: true  # Enable DNS forwarding with Dnsmasq
 consul_dnsmasq_cache: 0  # dnsmasq cache-size (0 - disable caching)
 consul_dnsmasq_servers: 
-#  - "{{ nameservers }}" # Upstream DNS servers used by dnsmasq
- - "127.0.0.1" 
- - "10.64.242.144"
+ - "{{ nameservers }}" # Upstream DNS servers used by dnsmasq
+#  - "127.0.0.1" 
+#  - "10.64.242.144"
 # ACL
 # Enable ACLs
 consul_acl_enable: true
